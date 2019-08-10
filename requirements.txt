@@ -6,6 +6,6 @@ vedis==0.7.1
 toml==0.10.0
 logzero==1.5.0
 lief==0.9.0
-capstone=4.0.1
+capstone==4.0.1
 pyelftools==0.25
 chardet==3.0.4
