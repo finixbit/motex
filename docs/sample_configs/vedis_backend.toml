@@ -1,0 +1,20 @@
+[motex]
+name = "test"
+arch = "X86_64" # (ARM | X86_64)
+binary_format = "ELF" # (PE | ELF | MACHO)
+binary_path = "path/to/binary-file"
+args.version = "1.0"
+
+[storage]
+backend = "vedis"
+format = "json" # (json | msgpack)
+args.database_path = "data/test.db"
+
+[extract]
+sections = true
+symbols = true
+segments = true
+relocations = true
+instructions = true
+functions = true
+basicblock = true

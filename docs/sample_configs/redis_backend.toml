@@ -1,0 +1,21 @@
+[motex]
+name = "test"
+arch = "X86_64"
+binary_format = "ELF"
+args.version = "1.0"
+
+
+[storage]
+backend = "redis"
+format = "json"
+args.host = "127.0.0.1"
+args.port = 6379
+
+[extract]
+sections = true
+symbols = true
+segments = true
+relocations = true
+instructions = true
+functions = true
+basicblock = true
