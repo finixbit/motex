@@ -199,7 +199,7 @@ class ELFExtractor:
         MotexCallsiteStorageHelper.prepare(storage)
 
         for index, current in enumerate(self.callsites.items()):
-            MotexCallsiteStorageHelper.save(current[1].cs_address, current[1], prev, storage)
+            MotexCallsiteStorageHelper.save(current[1].address, current[1], prev, storage)
             prev = current[1]
 
         MotexCallsiteStorageHelper.complete(storage)
@@ -232,7 +232,7 @@ class ELFExtractor:
 
             prev_insn = None
             MotexInstructionStorageHelper.prepare(storage)
-            md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
+            md = capstone.Cs(capstone.CS_ARCH_X86, capstone.MODE_64)
 
             for (index, instruction) in enumerate(md.disasm(text_code_content, text_code_entry)):
                 insn_address = hextools.int_to_hex(instruction.address)
@@ -249,44 +249,46 @@ class ELFExtractor:
                                          'address': fn_sym.symbol_value,
                                          'name': fn_sym.symbol_name,
                                          'callsites_list': [],
+                                         'function_edges': [],
                                          'basicblock_edges': [],
                                          'instructions_list': []}
 
                 if current_callsite_open:
-                    callsite_dict['cs_return_address'] = insn_address
+                    callsite_dict['return_address'] = insn_address
                     cs = MotexCallsite(**callsite_dict)
-                    self.callsites[callsite_dict.get('cs_address')] = cs
+                    self.callsites[callsite_dict.get('address')] = cs
 
                     current_callsite_open = False
                     callsite_dict = dict()
 
                 if 'call' in instruction.mnemonic:
                     current_callsite_open = True
-                    callsite_dict = {'cs_address': insn_address,
-                                     'cs_target_resolved': False,
-                                     'cs_target_name': instruction.op_str,
-                                     'cs_target_address': None,
-                                     'cs_target_type': None,
-                                     'cs_function_address': current_function,
-                                     'cs_basicblock_leader': None,}
+                    callsite_dict = {'address': insn_address,
+                                     'target_resolved': False,
+                                     'target_name': instruction.op_str,
+                                     'target_address': None,
+                                     'target_type': None,
+                                     'function_address': current_function,
+                                     'basicblock_leader': None,}
                     try:
-                        cs_target_address = hextools.hex_to_int(instruction.op_str)
-                        callsite_dict['cs_target_resolved'] = True
-                        callsite_dict['cs_target_address'] = hextools.int_to_hex(cs_target_address)
+                        target_address = hextools.hex_to_int(instruction.op_str)
+                        callsite_dict['target_resolved'] = True
+                        callsite_dict['target_address'] = hextools.int_to_hex(target_address)
 
-                        cs_sym = self.function_symbols.get(callsite_dict['cs_target_address'])
-                        if cs_sym:
-                            callsite_dict['cs_target_type'] = 'symbol'
-                            callsite_dict['cs_target_name'] = cs_sym.symbol_name
+                        sym = self.function_symbols.get(callsite_dict['target_address'])
+                        if sym:
+                            callsite_dict['target_type'] = 'symbol'
+                            callsite_dict['target_name'] = sym.symbol_name
+                            function_dict['function_edges'].append(sym.symbol_value)
 
-                        if hextools.int_to_hex(cs_target_address) in self.relocations.keys():
-                            rel_sym = self.relocations[hextools.int_to_hex(cs_target_address)]
-                            callsite_dict['cs_target_type'] = 'reloc'
-                            callsite_dict['cs_target_name'] = rel_sym.relocation_symbol_name
+                        if hextools.int_to_hex(target_address) in self.relocations.keys():
+                            rel_sym = self.relocations[hextools.int_to_hex(target_address)]
+                            callsite_dict['target_type'] = 'reloc'
+                            callsite_dict['target_name'] = rel_sym.relocation_symbol_name
                     except Exception as e:
                         pass
 
-                    if current_function and current_function_ret:
+                    if current_function and not current_function_ret:
                         function_dict['callsites_list'].append(insn_address)
 
                 instruction_dict = {'address': insn_address,

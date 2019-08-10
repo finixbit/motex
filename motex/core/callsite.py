@@ -29,7 +29,7 @@ class MotexCallsite:
         return hextools.hex_to_int(self.address) == hextools.hex_to_int(other.address)
 
     def __str__(self):
-        return "%s: <MotexCallsite> (%s)" % (self.cs_address, self.cs_target_name)
+        return "%s: <MotexCallsite> (%s)" % (self.address, self.target_name)
 
     def get_id(self):
         return self.index_
@@ -44,14 +44,14 @@ class MotexCallsite:
         return {'prev_': self.prev_,
                 'next_': self.next_,
                 'index_': self.index_,
-                'cs_address': self.cs_address,
-                'cs_return_address': self.cs_return_address,
-                'cs_target_resolved': self.cs_target_resolved,
-                'cs_target_address': self.cs_target_address,
-                'cs_target_type': self.cs_target_type,
-                'cs_target_name': self.cs_target_name,
-                'cs_function_address': self.cs_function_address,
-                'cs_basicblock_leader': self.cs_basicblock_leader,}
+                'address': self.address,
+                'return_address': self.return_address,
+                'target_resolved': self.target_resolved,
+                'target_address': self.target_address,
+                'target_type': self.target_type,
+                'target_name': self.target_name,
+                'function_address': self.function_address,
+                'basicblock_leader': self.basicblock_leader,}
 
 
 class MotexCallsiteStorageHelper(MotexStorageTracker):
