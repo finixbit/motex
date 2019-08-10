@@ -232,7 +232,7 @@ class ELFExtractor:
 
             prev_insn = None
             MotexInstructionStorageHelper.prepare(storage)
-            md = capstone.Cs(capstone.CS_ARCH_X86, capstone.MODE_64)
+            md = capstone.Cs(capstone.CS_ARCH_X86, capstone.CS_MODE_64)
 
             for (index, instruction) in enumerate(md.disasm(text_code_content, text_code_entry)):
                 insn_address = hextools.int_to_hex(instruction.address)
