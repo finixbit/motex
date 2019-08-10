@@ -7,8 +7,8 @@ from motex import __version__, Motex, MotexExtractor, MotexHelpers
 
 def command_load(arguments):
     motex_instance = Motex(arguments.config)
-    extractor = MotexExtractor(this.motex_config, this.storage)
-    extractor.extract(this.extract_config)
+    extractor = MotexExtractor(motex_instance.motex_config, motex_instance.storage)
+    extractor.extract(motex_instance.extract_config)
 
 
 def command_run(arguments):
