@@ -48,6 +48,7 @@ class MotexFunction:
                 'address': self.address,
                 'name': self.name,
                 'basicblock_leaders': self.basicblock_leaders,
+                'function_edges': self.function_edges,
                 'callsites_list': self.callsites_list,
                 'basicblock_edges': self.basicblock_edges,
                 'instructions_list': self.instructions_list}
